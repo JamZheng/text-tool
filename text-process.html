@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>文本处理工具</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 20px;
+			background-color: #f2f2f2;
+		}
+
+		h1 {
+			text-align: center;
+			color: #333333;
+		}
+		h3 {
+			text-align: center;
+			color: #332b2b;
+		}
+
+		.container {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			margin-top: 50px;
+		}
+
+		.button {
+			padding: 10px 20px;
+			font-size: 16px;
+			border-radius: 5px;
+			border: none;
+			cursor: pointer;
+			margin-top: 10px;
+			background-color: #4CAF50;
+			color: white;
+		}
+
+		#file-input {
+			display: none;
+		}
+
+		#file-info {
+			margin-top: 20px;
+			font-size: 14px;
+			color: #666666;
+		}
+
+		#output {
+			margin-top: 20px;
+			white-space: pre-line;
+			background-color: white;
+			padding: 10px;
+			border-radius: 5px;
+		}
+
+		#download-link {
+			display: none;
+			margin-top: 10px;
+			font-size: 14px;
+			color: #333333;
+		}
+	</style>
+</head>
+<body>
+	<h1>文本处理工具</h1>
+  <h3>字幕文件特供版</h3>
+
+	<div class="container">
+		<input type="file" id="file-input" accept=".txt">
+		<div id="file-info"></div>
+		<button class="button" onclick="selectFile()">选择文件</button>
+		<button class="button" onclick="processText()">处理文本</button>
+		<a id="download-link" href="#" download="processed_text.txt">点击此处下载处理后的文本文件</a>
+		<div id="output"></div>
+	</div>
+
+	<script>
+		function selectFile() {
+			document.getElementById('file-input').click();
+		}
+
+		function processText() {
+			var fileInput = document.getElementById('file-input');
+			var file = fileInput.files[0];
+
+			if (file) {
+				var reader = new FileReader();
+				reader.onload = function(e) {
+					var text = e.target.result;
+
+					// 去除多余的空格
+					text = text.replace(/\s+/g, ' ');
+
+					// 替换换行符
+					text = text.replace(/\n+/g, ' ');
+
+					var blob = new Blob([text], {type: 'text/plain'});
+					var url = URL.createObjectURL(blob);
+
+					var link = document.getElementById('download-link');
+					link.href = url;
+					link.style.display = 'block';
+
+					var fileInfo = document.getElementById('file-info');
+					fileInfo.innerHTML = '文件名：' + file.name + '，读取时间：' + new Date().toLocaleString();
+
+					document.getElementById('output').innerHTML = text;
+				};
+				reader.readAsText(file);
+			}
+		}
+	</script>
+</body>
+</html>
